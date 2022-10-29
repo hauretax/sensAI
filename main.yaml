@@ -1,0 +1,80 @@
+import:
+
+  # Input graphs (select one)
+  # -------------------------
+  # - graphs/sinus.yaml # generated sinusoidal signal
+  # - graphs/bitalino.yaml # BITalino device
+  - graphs/replay.yaml # pre-recorded data
+
+  # Extract biomarkers and record data
+  # - graphs/biomarkers.yaml
+  # - graphs/save.yaml # save the data into Hdf5
+
+graphs:
+
+- id: broker
+  nodes:
+    - id: broker
+      module: timeflux.nodes.zmq
+      class: Broker
+
+- id: ui
+  nodes:
+
+    # Subscribe to signals
+    # --------------------
+    - id: sub
+      module: timeflux.nodes.zmq
+      class: Sub
+      params:
+        topics: [raw]
+
+    # Cleaning signal
+    # ---------------
+    - id: downsample
+      module: timeflux_dsp.nodes.filters
+      class: DropRows
+      params:
+        factor: 2
+
+    - id: smooth
+      module: nodes.filter
+      class:  MovingAverage
+      params:
+        length: .5
+        step: 0.
+
+    # # Identify tonic component
+    # # ------------------------
+    # - id: smooth
+    #   module: nodes.filter
+    #   class:  MovingAverage
+    #   params:
+    #     length: .5
+    #     step: 0.
+
+
+    # Define apps for feedback
+    # ------------------------
+    - id: ui
+      module: timeflux_ui.nodes.ui
+      class: UI
+      params:
+        routes:
+          smile: www  # now open http://localhost:8000/smile/
+        settings:
+          circle:
+            transition:
+              color: .5s
+              size: .5s
+
+  edges:
+    - source: sub:raw
+      target: ui:raw
+
+    - source: sub:raw
+      target: downsample
+    - source: downsample
+      target: smooth
+    - source: smooth
+      target: ui:smoothed
