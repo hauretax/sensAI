@@ -1,5 +1,6 @@
 
-var audio = new Audio('assets/song1.mp3');
+var audio1 = new Audio('assets/a.mp3');
+var audio2 = new Audio('assets/song1.mp3');
 let temps = 100;
 let timerElement;
 
@@ -16,52 +17,33 @@ function diminuerTemps() {
 }
 
 
-document.getElementById('button').onclick = function() {
+document.getElementById('button').onclick = function () {
     this.style.display = "none";
-    audio.play();
+    audio1.play();
     timerElement = document.getElementById("timer")
     timerElement.innerText = temps
-  
+
     setInterval(diminuerTemps, 1000)
-  }
+}
 
 let io = new IO();
 
 io.on("connect", () => {
     console.log("io connected");
-    io.subscribe("smoothed");
+    io.subscribe("phasic");
 })
 
-let min = 10000;
-let max = 0;
-//setup vision based on distance vision wanted in px (Y) and data receivd (X)
-const maxX = 17
-const maxY = 120
-const minX = 9
-const minY = 20
-let indice = maxX - minX;
-console.log('indice:', indice)
-let mult = 100 / indice;
-console.log('mult:', mult)
-io.on("smoothed", (data) => {
+io.on("phasic", (data) => {
 
 
     let row = data[Object.keys(data)[Object.keys(data).length - 1]]; // Last row
     let column = Object.keys(row)[0]; // First column
     let value = row[column];
+    console.log(value)
 
-    let newvalue = (value - minX) * mult;
+    const maxvision = 200;
 
-
-    if (newvalue < min) {
-        console.log('min:', newvalue, value)
-        min = newvalue
-    }
-    if (newvalue > max) {
-        console.log('max:', newvalue, value)
-        max = newvalue
-    }
-    player.changeVisionSize(newvalue);
+    player.changeVisionSize(maxvision - value * 70);
 })
 
 const wall = new Walls()
