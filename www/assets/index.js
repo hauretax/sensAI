@@ -1,4 +1,11 @@
 
+var audio = new Audio('assets/song1.mp3');
+document.getElementById('button').onclick = function() {
+  this.style.display = "none";
+  audio.play();
+}
+
+
 let io = new IO();
 
 io.on("connect", () => {
@@ -41,7 +48,7 @@ io.on("smoothed", (data) => {
 })
 
 const wall = new Walls()
-const player = new Player(setup(map, wall), document.getElementById('player'))
+const player = new Player(setup(map, wall), document.getElementById('player'), document.getElementById('screamer'))
 
 function update() {
     player.moov();

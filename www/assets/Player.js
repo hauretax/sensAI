@@ -4,7 +4,7 @@ const borderSize = 2500;
 
 class Player {
 
-    constructor({ x, y }, div) {
+    constructor({ x, y }, div, screamer) {
         this.visionSize = 100;
         this.size = borderSize + (this.visionSize / 2)
         this.x = x - this.size;
@@ -12,6 +12,9 @@ class Player {
         this.div = div;
         this.ymoov = 0;
         this.xmoov = 0;
+        this.screamer = screamer;
+        this.audio = new Audio('assets/grognement-1.mp3');
+        this.audio.pause()
     }
 
     isLegal(newX, newY) {
@@ -28,14 +31,17 @@ class Player {
 
         let tmpChar = map[yp][xp];
         if (tmpChar === 'O' || tmpChar == 'P') {
-            return true
+            return 1
+        }
+        if (tmpChar == 'A') {
+            return 2
         }
         if (tmpChar == 'X') {
-            return false
+            return 0
         }
         if (tmpChar == 'S') {
             alert('BRAVO vous avez gagner et tout et tout');
-            return false
+            return 0
         }
     }
 
@@ -53,15 +59,26 @@ class Player {
     }
 
     moov() {
+        let result_move = 0;
         this.size = borderSize + (this.visionSize / 2)
         if (this.ymoov) {
-            if (this.isLegal(this.x, speed * this.ymoov + this.y))
+            result_move = this.isLegal(this.x, speed * this.ymoov + this.y)
+            if (result_move)
                 this.y += speed * this.ymoov;
         }
         if (this.xmoov) {
-            if (this.isLegal(speed * this.xmoov + this.x, this.y))
+          result_move = this.isLegal(speed * this.xmoov + this.x, this.y)
+            if (result_move)
                 this.x += speed * this.xmoov;
         }
+        if (result_move === 2) {
+          this.screamer.style.visibility = "visible"
+          this.audio.play()
+          setTimeout(function() {
+            this.screamer.style.visibility = "hidden"
+          }, 300)
+        }
+
     }
 
     print() {
