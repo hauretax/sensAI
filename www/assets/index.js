@@ -16,16 +16,6 @@ function diminuerTemps() {
     temps = temps <= 0 ? 0 : temps - 1
 }
 
-
-document.getElementById('button').onclick = function () {
-    this.style.display = "none";
-    audio1.play();
-    timerElement = document.getElementById("timer")
-    timerElement.innerText = temps
-
-    setInterval(diminuerTemps, 1000)
-}
-
 let io = new IO();
 
 io.on("connect", () => {
@@ -34,9 +24,17 @@ io.on("connect", () => {
     io.subscribe("peaks");
 })
 
+document.getElementById('button').onclick = function () {
+    io.event("start_game");
+    this.style.display = "none";
+    audio1.play();
+    timerElement = document.getElementById("timer")
+    timerElement.innerText = temps
+
+    setInterval(diminuerTemps, 1000)
+}
+
 io.on("phasic", (data) => {
-
-
     let row = data[Object.keys(data)[Object.keys(data).length - 1]]; // Last row
     let column = Object.keys(row)[0]; // First column
     let value = row[column];
@@ -52,9 +50,7 @@ io.on("peaks", (data) => {
   {
     console.log(row)
     if (row['label'] == 'peak')
-    {
-      temps = temps - ( row['data']['value'] / 5);
-    }
+      temps = temps - ( row['data']['value'] / 4 );
   }
 })
 

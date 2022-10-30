@@ -1,0 +1,33 @@
+graphs:
+  - id: save
+    nodes:
+      - id: sub
+        module: timeflux.nodes.zmq
+        class: Sub
+        params:
+          topics: [raw, tonic, phasic, peaks, events ]
+
+      - id: save
+        module: timeflux.nodes.hdf5
+        class: Save
+        params:
+          path: output
+          min_itemsize: 1000
+
+    edges:
+      - source: sub:raw
+        target: save:raw # will be saved in hdf( key '/tonic'smile
+
+      - source: sub:tonic
+        target: save:tonic # will be saved in hdf( key '/tonic'smile
+
+      - source: sub:phasic
+        target: save:phasic # will be saved in hdf( key '/phasic'
+
+      - source: sub:peaks
+        target: save:peaks # will be saved in hdf( key '/peaks'
+
+      - source: sub:events
+        target: save:events # will be saved in hdf( key '/events'
+
+    rate: 1 # save stuff once per second
