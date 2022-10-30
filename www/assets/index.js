@@ -1,9 +1,17 @@
 
-var audio1 = new Audio('assets/a.mp3');
+var audio1 = new Audio('assets/as.mp3');
 var audio2 = new Audio('assets/song1.mp3');
 let temps = 100;
 let timerElement;
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+let mapsStr = urlParams.get('maps')
+let map = maps[mapsStr];
 
+if (!map) {
+    map = maps['chill'];
+    mapsStr = 'chill'
+}
 
 function diminuerTemps() {
     let minutes = parseInt(temps / 60, 10)
@@ -27,7 +35,15 @@ io.on("connect", () => {
 document.getElementById('button').onclick = function () {
     io.event("start_game");
     this.style.display = "none";
-    audio1.play();
+    if (mapsStr == 'chill') {
+        audio1.play();
+        io.event("start_low");
+    }
+    else {
+        audio2.play();
+        io.event("start_high");
+
+    }
     timerElement = document.getElementById("timer")
     timerElement.innerText = temps
 
@@ -56,7 +72,8 @@ io.on("peaks", (data) => {
 
 const wall = new Walls()
 const player = new Player(setup(map, wall), document.getElementById('player'), document.getElementById('screamer'))
-
+if (mapsStr == 'chill')
+    player.div.style.borderColor = "rgba(10, 10, 10, 0)"
 function update() {
     player.moov();
 }
