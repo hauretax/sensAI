@@ -31,27 +31,27 @@ graphs:
 
     # Cleaning signal
     # ---------------
-    - id: downsample
-      module: timeflux_dsp.nodes.filters
-      class: DropRows
-      params:
-        factor: 2
-
-    - id: smooth
-      module: nodes.filter
-      class:  MovingAverage
-      params:
-        length: .5
-        step: 0.
-
-    # # Identify tonic component
-    # # ------------------------
+    # - id: downsample
+    #   module: timeflux_dsp.nodes.filters
+    #   class: DropRows
+    #   params:
+    #     factor: 2
+    #
     # - id: smooth
     #   module: nodes.filter
     #   class:  MovingAverage
     #   params:
     #     length: .5
     #     step: 0.
+
+    # Identify phasic component
+    # ------------------------
+    - id: phasic
+      module: nodes.filter
+      class:  PhasicComponent
+      params:
+        length: 5.
+        step: 1.
 
 
     # Define apps for feedback
@@ -73,8 +73,6 @@ graphs:
       target: ui:raw
 
     - source: sub:raw
-      target: downsample
-    - source: downsample
-      target: smooth
-    - source: smooth
-      target: ui:smoothed
+      target: phasic
+    - source: phasic
+      target: ui:phasic
