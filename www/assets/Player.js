@@ -1,6 +1,6 @@
 const speed = 1;
 const borderSize = 2500;
-
+let lastScream = { x: 0, y: 0 }
 
 class Player {
 
@@ -34,6 +34,11 @@ class Player {
             return 1
         }
         if (tmpChar == 'A') {
+            if (lastScream.x !== xp && lastScream.y !== yp) {
+                io.event("jump_scare");
+                lastScream.x = xp;
+                lastScream.y = yp;
+            }
             return 2
         }
         if (tmpChar == 'X') {
@@ -75,6 +80,8 @@ class Player {
                 this.x += speed * this.xmoov;
         }
         if (result_move === 2) {
+
+
             this.screamer.style.visibility = "visible"
             this.audio.play()
             setTimeout(function () {

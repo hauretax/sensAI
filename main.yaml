@@ -37,6 +37,7 @@ graphs:
     #   params:
     #     factor: 2
     #
+
     # - id: smooth
     #   module: nodes.filter
     #   class:  MovingAverage
@@ -67,6 +68,9 @@ graphs:
             transition:
               color: .5s
               size: .5s
+    - id: display
+      module: timeflux.nodes.debug
+      class: Display
 
   edges:
     - source: sub:raw
@@ -76,3 +80,6 @@ graphs:
       target: phasic
     - source: phasic
       target: ui:phasic
+      
+    - source: ui:events
+      target: display

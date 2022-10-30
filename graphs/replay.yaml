@@ -10,6 +10,8 @@ graphs:
             - /raw
           speed: 1
 
+ 
+
       - id: pub # /!\ make sure you have a Broker amongst your graphs!  /!\
         module: timeflux.nodes.zmq
         class: Pub
