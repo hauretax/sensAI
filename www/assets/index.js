@@ -1,9 +1,12 @@
 
-var audio1 = new Audio('assets/a.mp3');
+var audio1 = new Audio('assets/as.mp3');
 var audio2 = new Audio('assets/song1.mp3');
 let temps = 100;
 let timerElement;
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const mapsStr = urlParams.get('maps')
+const map = maps[mapsStr];
 
 function diminuerTemps() {
     let minutes = parseInt(temps / 60, 10)
@@ -19,7 +22,10 @@ function diminuerTemps() {
 
 document.getElementById('button').onclick = function () {
     this.style.display = "none";
-    audio1.play();
+    if (mapsStr == 'chill')
+        audio1.play();
+    else
+        audio2.play();
     timerElement = document.getElementById("timer")
     timerElement.innerText = temps
 
@@ -48,7 +54,8 @@ io.on("phasic", (data) => {
 
 const wall = new Walls()
 const player = new Player(setup(map, wall), document.getElementById('player'), document.getElementById('screamer'))
-
+if (mapsStr == 'chill')
+    player.div.style.borderColor = "rgba(10, 10, 10, 0)"
 function update() {
     player.moov();
 }

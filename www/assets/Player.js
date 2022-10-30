@@ -30,7 +30,7 @@ class Player {
             yp = Math.floor((newY + this.size - 5) / 25)
 
         let tmpChar = map[yp][xp];
-        if (tmpChar === 'O' || tmpChar == 'P') {
+        if (tmpChar === 'O' || tmpChar === 'P') {
             return 1
         }
         if (tmpChar == 'A') {
@@ -41,14 +41,19 @@ class Player {
             }
             return 2
         }
-        if (tmpChar == 'X') {
+        if (tmpChar === 'X') {
             return 0
         }
-        if (tmpChar == 'S') {
+        if (tmpChar === 'S') {
             on = false
-            alert('BRAVO vous avez gagner et tout et tout');
-
-            window.location.href = window.location.href;
+            if (mapsStr == 'chill') {
+                alert('appuier sur entree quand vous vous senter pret');
+               
+               
+                document.getElementById('wall').remove();
+            }
+            console.log(window.location.href )
+           window.location.href = "http://localhost:8000/smile/?maps=map"
             return 0
         }
     }
