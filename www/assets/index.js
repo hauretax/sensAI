@@ -1,9 +1,29 @@
 
 var audio = new Audio('assets/song1.mp3');
-document.getElementById('button').onclick = function () {
+let temps = 100;
+let timerElement;
+
+
+function diminuerTemps() {
+    let minutes = parseInt(temps / 60, 10)
+    let secondes = parseInt(temps % 60, 10)
+
+    minutes = minutes < 10 ? "0" + minutes : minutes
+    secondes = secondes < 10 ? "0" + secondes : secondes
+
+    timerElement.innerText = minutes + ":" + secondes
+    temps = temps <= 0 ? 0 : temps - 1
+}
+
+
+document.getElementById('button').onclick = function() {
     this.style.display = "none";
     audio.play();
-}
+    timerElement = document.getElementById("timer")
+    timerElement.innerText = temps
+  
+    setInterval(diminuerTemps, 1000)
+  }
 
 let io = new IO();
 
