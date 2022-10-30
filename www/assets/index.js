@@ -1,10 +1,9 @@
 
 var audio = new Audio('assets/song1.mp3');
-document.getElementById('button').onclick = function() {
-  this.style.display = "none";
-  audio.play();
+document.getElementById('button').onclick = function () {
+    this.style.display = "none";
+    audio.play();
 }
-
 
 let io = new IO();
 
@@ -31,9 +30,7 @@ io.on("smoothed", (data) => {
     let column = Object.keys(row)[0]; // First column
     let value = row[column];
 
-
-
-    let newvalue = ( value - minX) * mult;
+    let newvalue = (value - minX) * mult;
 
 
     if (newvalue < min) {
@@ -75,9 +72,8 @@ function iteration(chrono) {
         update();
         if (compteur === 200) fini = true;
     }
-
-    //  if (!fini)
-    window.requestAnimationFrame(iteration);
+    if (on)
+        window.requestAnimationFrame(iteration);
 
 }
 

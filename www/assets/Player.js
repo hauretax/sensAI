@@ -40,7 +40,10 @@ class Player {
             return 0
         }
         if (tmpChar == 'S') {
+            on = false
             alert('BRAVO vous avez gagner et tout et tout');
+
+            window.location.href = window.location.href;
             return 0
         }
     }
@@ -67,16 +70,16 @@ class Player {
                 this.y += speed * this.ymoov;
         }
         if (this.xmoov) {
-          result_move = this.isLegal(speed * this.xmoov + this.x, this.y)
+            result_move = this.isLegal(speed * this.xmoov + this.x, this.y)
             if (result_move)
                 this.x += speed * this.xmoov;
         }
         if (result_move === 2) {
-          this.screamer.style.visibility = "visible"
-          this.audio.play()
-          setTimeout(function() {
-            this.screamer.style.visibility = "hidden"
-          }, 300)
+            this.screamer.style.visibility = "visible"
+            this.audio.play()
+            setTimeout(function () {
+                this.screamer.style.visibility = "hidden"
+            }, 300)
         }
 
     }
