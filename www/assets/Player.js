@@ -47,19 +47,21 @@ class Player {
         if (tmpChar === 'S') {
             on = false
             if (mapsStr == 'chill') {
+                io.event("end_low");
                 alert('appuier sur entree quand vous vous senter pret');
-               
-               
-                document.getElementById('wall').remove();
             }
-            console.log(window.location.href )
-           window.location.href = "http://localhost:8000/smile/?maps=map"
+            else {
+
+                io.event("end_high");
+                alert("merci d'avoir participer")
+            }
+            window.location.href = "http://localhost:8000/smile/?maps=map"
             return 0
         }
     }
 
     changeVisionSize(size) {
-        console.log(size)
+        F
         const lastSize = this.visionSize;
 
         const diff = (size - lastSize) / 2

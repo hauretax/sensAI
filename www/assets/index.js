@@ -5,8 +5,13 @@ let temps = 100;
 let timerElement;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const mapsStr = urlParams.get('maps')
-const map = maps[mapsStr];
+let mapsStr = urlParams.get('maps')
+let map = maps[mapsStr];
+
+if (!map) {
+    map = maps['chill'];
+    mapsStr = 'chill'
+}
 
 function diminuerTemps() {
     let minutes = parseInt(temps / 60, 10)
@@ -22,10 +27,15 @@ function diminuerTemps() {
 
 document.getElementById('button').onclick = function () {
     this.style.display = "none";
-    if (mapsStr == 'chill')
+    if (mapsStr == 'chill') {
         audio1.play();
-    else
+        io.event("start_low");
+    }
+    else {
         audio2.play();
+        io.event("start_high");
+
+    }
     timerElement = document.getElementById("timer")
     timerElement.innerText = temps
 
