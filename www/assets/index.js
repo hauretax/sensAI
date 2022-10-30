@@ -31,6 +31,7 @@ let io = new IO();
 io.on("connect", () => {
     console.log("io connected");
     io.subscribe("phasic");
+    io.subscribe("peaks");
 })
 
 io.on("phasic", (data) => {
@@ -39,11 +40,22 @@ io.on("phasic", (data) => {
     let row = data[Object.keys(data)[Object.keys(data).length - 1]]; // Last row
     let column = Object.keys(row)[0]; // First column
     let value = row[column];
-    console.log(value)
 
     const maxvision = 200;
 
     player.changeVisionSize(maxvision - value * 70);
+})
+
+io.on("peaks", (data) => {
+  let row = data[Object.keys(data)[Object.keys(data).length - 1]]; // Last row
+  if (row != undefined)
+  {
+    console.log(row)
+    if (row['label'] == 'peak')
+    {
+      temps = temps - ( row['data']['value'] / 5);
+    }
+  }
 })
 
 const wall = new Walls()

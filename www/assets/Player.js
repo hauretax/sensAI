@@ -54,7 +54,6 @@ class Player {
     }
 
     changeVisionSize(size) {
-        console.log(size)
         const lastSize = this.visionSize;
 
         const diff = (size - lastSize) / 2
