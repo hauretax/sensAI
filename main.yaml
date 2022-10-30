@@ -8,7 +8,7 @@ import:
 
   # Extract biomarkers and record data
   # - graphs/biomarkers.yaml
-  # - graphs/save.yaml # save the data into Hdf5
+  - graphs/save.yaml # save the data into Hdf5
 
 graphs:
 
@@ -31,19 +31,35 @@ graphs:
 
     # Cleaning signal
     # ---------------
-    # - id: downsample
-    #   module: timeflux_dsp.nodes.filters
-    #   class: DropRows
-    #   params:
-    #     factor: 2
-    #
+    - id: downsample
+      module: timeflux_dsp.nodes.filters
+      class: DropRows
+      params:
+        factor: 2
 
-    # - id: smooth
-    #   module: nodes.filter
-    #   class:  MovingAverage
-    #   params:
-    #     length: .5
-    #     step: 0.
+
+    - id: smooth
+      module: nodes.filter
+      class:  MovingAverage
+      params:
+        length: .5
+        step: 0.
+
+    # Identify peaks
+    # --------------
+    - id: peaks
+      module: timeflux_dsp.nodes.peaks
+      class: LocalDetect
+      params:
+        delta: .01
+        tol: .5
+
+    - id: peaks_value
+      module: nodes.events
+      class: EventToSignal
+      params:
+        labels: peak
+        meta_keys: value
 
     # Identify phasic component
     # ------------------------
@@ -68,18 +84,74 @@ graphs:
             transition:
               color: .5s
               size: .5s
+
     - id: display
       module: timeflux.nodes.debug
       class: Display
 
+    # Publication
+    # -----------
+    - id: pub_phasic
+      module: timeflux.nodes.zmq
+      class: Pub
+      params:
+        topic: phasic
+
+    - id: pub_tonic
+      module: timeflux.nodes.zmq
+      class: Pub
+      params:
+        topic: tonic
+
+    - id: pub_peaks
+      module: timeflux.nodes.zmq
+      class: Pub
+      params:
+        topic: peaks
+
+    - id: pub_events
+      module: timeflux.nodes.zmq
+      class: Pub
+      params:
+        topic: events
+
   edges:
+    # RAW
     - source: sub:raw
       target: ui:raw
 
+    # PHASIC
     - source: sub:raw
       target: phasic
     - source: phasic
       target: ui:phasic
-      
+
+    # PEAKS
+    - source: sub:raw
+      target: downsample
+    - source: downsample
+      target: smooth
+    - source: smooth
+      target: peaks
+    - source: peaks
+      target: peaks_value
+    - source: peaks
+      target: ui:peaks
+
+    # TONIC
+    - source: smooth
+      target: ui:smooth
+
+    # DEBUG
     - source: ui:events
       target: display
+
+    # PUB
+    - source: phasic
+      target: pub_phasic
+    - source: smooth
+      target: pub_tonic
+    - source: peaks_value
+      target: pub_peaks
+    - source: ui:events
+      target: pub_events
