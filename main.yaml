@@ -44,6 +44,9 @@ graphs:
         length: .5
         step: 0.
 
+  
+
+
     # # Identify tonic component
     # # ------------------------
     # - id: smooth
@@ -67,6 +70,9 @@ graphs:
             transition:
               color: .5s
               size: .5s
+    - id: display
+      module: timeflux.nodes.debug
+      class: Display
 
   edges:
     - source: sub:raw
@@ -78,3 +84,5 @@ graphs:
       target: smooth
     - source: smooth
       target: ui:smoothed
+    - source: ui:events
+      target: display

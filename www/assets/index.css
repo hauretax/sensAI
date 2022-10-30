@@ -91,3 +91,12 @@ audio {
   left: 50%;
   margin-left: -55px;
 }
+
+#edaChart {
+  width: 600px;
+  max-width: 200px;
+  height: 100px;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
